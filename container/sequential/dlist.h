@@ -19,14 +19,14 @@
  ************************************************************************************/
 
 #include <assert.h>
-#include "allocator.h"
+#include "../../memory/allocator.h"
 
-namespace DWI {
+namespace BASE {
     namespace CNT {
         namespace SEQ {
 
             
-using DWI::MEM::CAllocator;
+using BASE::MEM::CAllocator;
 
 /**
  * Representing a double-linked-list.
@@ -886,7 +886,7 @@ CDoubleLinkedList<T, Allocator>::GetIteratorByIndex(index_type _Index)
 
         } // namespace SEQ
     } // namespace CNT
-} // namespace DWI
+} // namespace BASE
 
 #endif // __INCLUDE_DOUBLE_LINKED_LIST_H_
 

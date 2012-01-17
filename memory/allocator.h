@@ -11,7 +11,7 @@
  * @email   david.dw.wieland@googlemail.com                                         *
  ************************************************************************************/
 
-namespace DWI {
+namespace BASE {
     namespace MEM {
 
 
@@ -162,7 +162,7 @@ operator!=(const T1&, const T2&)
 
 
     } // namespace MEM
-} // namespace DWI
+} // namespace BASE
 
 
 #endif // __INCLUDE_ALLOCATOR_H_

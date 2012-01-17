@@ -12,14 +12,14 @@
  ************************************************************************************/
 
 #include <assert.h>
-#include "allocator.h"
+#include "../../memory/allocator.h"
 
-namespace DWI {
+namespace BASE {
     namespace CNT {
         namespace SEQ {
 
             
-using DWI::MEM::CAllocator;
+using BASE::MEM::CAllocator;
 
 template <typename T, typename Allocator = CAllocator<T>>
 class CVector
@@ -29,6 +29,6 @@ class CVector
 
         } // namespace SEQ
     } // namespace CNT
-} // namespace DWI
+} // namespace BASE
 
 #endif // __INCLUDE_VECTOR_H_

@@ -20,15 +20,15 @@
  ************************************************************************************/
 
 #include <assert.h>
-#include "allocator.h"
+#include "../../memory/allocator.h"
 #include "hash.h"
 
-namespace DWI {
+namespace BASE {
     namespace CNT {
         namespace ASOC {
 
             
-using DWI::MEM::CAllocator;
+using BASE::MEM::CAllocator;
 
 template <typename Key,                         // key type
     typename Value,                             // value type
@@ -83,6 +83,6 @@ private: // member
 
         } // namespace ASOC
     } // namespace CNT
-} // namespace DWI
+} // namespace BASE
 
 #endif // __INCLUDE_HASH_TABLE_H_
