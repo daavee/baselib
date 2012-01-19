@@ -18,6 +18,7 @@
 
 #include <assert.h>
 #include "../../memory/allocator.h"
+#include "../../utility/hash/dummyhash.h"
 
 namespace BASE {
     namespace CNT {
@@ -25,6 +26,7 @@ namespace BASE {
 
             
 using BASE::MEM::CAllocator;
+using BASE::UTIL::HASH::SDummyHash;
 
 /**
  * Representing a binary tree.
@@ -32,7 +34,7 @@ using BASE::MEM::CAllocator;
  * of allocated memory for copies. Allocator has to be from
  * this library.
  **/
-template <typename T, template <typename> class Allocator = CAllocator>
+template <typename T, template <typename> class Hash = SDummyHash, template <typename> class Allocator = CAllocator>
 class CBinaryTree
 {
 public: // public forward declarations
@@ -67,16 +69,19 @@ public: // public typdefs
 
 private: // private typedefs
 
-    typedef CNode        node_type;
-    typedef unsigned int hash_type;
+    typedef CNode                     node_type;
+    typedef Hash                      hash_func_type;
+    typedef hash_func_type::hash_type key_type;
 
     //typedef typename allocator_type::template SRebind<node_type>::other node_allocator_type;
     typedef Allocator<node_type> node_allocator_type;
 
 public: // ctor, dtor
 
-    CBinaryTree(const allocator_type& _Allocator = allocator_type());
-    CBinaryTree(const self& _rList);
+    CBinaryTree();
+    CBinaryTree(const self& _rList);                                        // copy ctor
+    self& operator=(const self& _rList);                                    // assignment operator
+
     ~CBinaryTree();
 
 public: // iterator creation
@@ -304,12 +309,13 @@ private: // node declaration
         node_type* m_pParent;
         node_type* m_pLeftChild;
         node_type* m_pRightChild;
-        hash_type  m_Hash;
-        value_type m_Element;
+        key_type   m_Key;
+        value_type m_Value;
     };
 
 private: // member
 
+    hash_func_type      m_HashFunc;
     allocator_type      m_Allocator;
     node_allocator_type m_NodeAllocator;
     node_type*          m_pRoot;
@@ -319,8 +325,19 @@ private: // internal methods
 
 };
 
-template <typename T, template <typename> class Allocator>
-iterator CBinaryTree<T, Allocator>::Insert(const_reference _rElement)
+template <typename T, template <typename> class Hash, template <typename> class Allocator>
+CBinaryTree<T, Hash, Allocator>::CBinaryTree()
+    : m_HashFunc()
+    , m_Allocator()
+    , m_NodeAllocator()
+    , m_pRoot(0)
+    , m_Size(0)
+{
+}
+
+
+template <typename T, template <typename> class Hash, template <typename> class Allocator>
+iterator CBinaryTree<T, Hash, Allocator>::Insert(const_reference _rElement)
 {
     //todo
 }
@@ -331,4 +348,3 @@ iterator CBinaryTree<T, Allocator>::Insert(const_reference _rElement)
 } // namespace BASE
 
 #endif // __INCLUDE_BINARY_TREE_H_
-
