@@ -34,7 +34,12 @@ using BASE::UTIL::HASH::SDummyHash;
  * of allocated memory for copies. Allocator has to be from
  * this library.
  **/
-template <typename Key, typename Value, template <typename> class Hash = SDummyHash, template <typename> class Allocator = CAllocator>
+template <
+    typename Key,
+    typename Value,
+    template <typename> class Hash = SDummyHash,
+    template <typename> class Allocator = CAllocator
+>
 class CBinaryTree
 {
 public: // public forward declarations
@@ -282,6 +287,8 @@ private: // node declaration
 
     struct SNode
     {
+        SNode(node_type* _pParent, node_type* _pLeftChild, node_type* _pRightChild, hash_key_type _HashKey, value_type _Value);
+
         node_type*    m_pParent;
         node_type*    m_pLeftChild;
         node_type*    m_pRightChild;
@@ -326,16 +333,12 @@ CBinaryTree<Key, Value, Hash, Allocator>::Insert(const key_type& _rKey, const va
 
 template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
 typename CBinaryTree<Key, Value, Hash, Allocator>::iterator
-CBinaryTree<Key, Value, Hash, Allocator>::InsertOnChild(node_type** _ppChild, node_type* _pParent, const hash_key_type& _rHashKey, const value_type& _rValue)
+CBinaryTree<Key, Value, Hash, Allocator>::InsertOnChild(node_type** _ppChild, node_type* _pParent,
+    const hash_key_type& _rHashKey, const value_type& _rValue)
 {
     if (*_ppChild == 0) // child doesn't exist
     {
-        *_ppChild = new SNode();
-        (*_ppChild)->m_pParent = _pParent;
-        (*_ppChild)->m_pLeftChild = 0;
-        (*_ppChild)->m_pRightChild = 0;
-        (*_ppChild)->m_HashKey = _rHashKey;
-        (*_ppChild)->m_Value = _rValue;
+        *_ppChild = new SNode(_pParent, 0, 0, _rHashKey, _rValue);
         ++m_Size;
 
         return *_ppChild;
@@ -363,6 +366,17 @@ CBinaryTree<Key, Value, Hash, Allocator>::CConstIterator::CConstIterator(node_ty
 template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
 CBinaryTree<Key, Value, Hash, Allocator>::CIterator::CIterator(node_type* _pNode)
     : CConstIterator(_pNode)
+{
+}
+
+template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
+CBinaryTree<Key, Value, Hash, Allocator>::SNode::SNode(node_type* _pParent, node_type* _pLeftChild,
+    node_type* _pRightChild, hash_key_type _HashKey, value_type _Value)
+    : m_pParent(_pParent)
+    , m_pLeftChild(_pLeftChild)
+    , m_pRightChild(_pRightChild)
+    , m_HashKey(_HashKey)
+    , m_Value(_Value)
 {
 }
 
