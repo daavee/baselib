@@ -321,7 +321,7 @@ template <typename Key, typename Value, template <typename> class Hash, template
 typename CBinaryTree<Key, Value, Hash, Allocator>::iterator
 CBinaryTree<Key, Value, Hash, Allocator>::Insert(const key_type& _rKey, const value_type& _rValue)
 {
-    InsertOnNode(m_pRoot, m_HashFunc(_rKey), _rValue);
+    return InsertOnChild(&m_pRoot, 0, m_HashFunc(_rKey), _rValue);
 }
 
 template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
@@ -331,11 +331,12 @@ CBinaryTree<Key, Value, Hash, Allocator>::InsertOnChild(node_type** _ppChild, no
     if (*_ppChild == 0) // child doesn't exist
     {
         *_ppChild = new SNode();
-        pNode->m_pParent = _pParent;
-        pNode->m_pLeftChild = 0;
-        pNode->m_pRightChild = 0;
-        pNode->m_HashKey = _rHashKey;
-        pNode->m_Value = _rValue;
+        (*_ppChild)->m_pParent = _pParent;
+        (*_ppChild)->m_pLeftChild = 0;
+        (*_ppChild)->m_pRightChild = 0;
+        (*_ppChild)->m_HashKey = _rHashKey;
+        (*_ppChild)->m_Value = _rValue;
+        ++m_Size;
 
         return *_ppChild;
     }
@@ -351,6 +352,18 @@ CBinaryTree<Key, Value, Hash, Allocator>::InsertOnChild(node_type** _ppChild, no
     {
         return *_ppChild;
     }
+}
+
+template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
+CBinaryTree<Key, Value, Hash, Allocator>::CConstIterator::CConstIterator(node_type* _pNode)
+    : m_pNode(_pNode)
+{
+}
+
+template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
+CBinaryTree<Key, Value, Hash, Allocator>::CIterator::CIterator(node_type* _pNode)
+    : CConstIterator(_pNode)
+{
 }
 
 
