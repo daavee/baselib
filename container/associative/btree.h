@@ -34,7 +34,7 @@ using BASE::UTIL::HASH::SDummyHash;
  * of allocated memory for copies. Allocator has to be from
  * this library.
  **/
-template <typename T, template <typename> class Hash = SDummyHash, template <typename> class Allocator = CAllocator>
+template <typename Key, typename Value, template <typename> class Hash = SDummyHash, template <typename> class Allocator = CAllocator>
 class CBinaryTree
 {
 public: // public forward declarations
@@ -46,19 +46,15 @@ public: // public forward declarations
 
 private: // private forward declarations
 
-    class CNode;
+    struct SNode;
 
 public: // public typdefs
 
-    typedef T                 value_type;
-    typedef value_type*       pointer;
-    typedef const value_type* const_pointer;
-    typedef value_type&       reference;
-    typedef const value_type& const_reference;
-    typedef size_t            size_type;
-    typedef int               index_type;
+    typedef Key    key_type;
+    typedef Value  value_type;
+    typedef size_t size_type;
 
-    typedef Allocator<T>      allocator_type;
+    typedef Allocator<T> allocator_type;
 
     typedef CBinaryTree<T, Allocator> self;
 
@@ -69,9 +65,9 @@ public: // public typdefs
 
 private: // private typedefs
 
-    typedef CNode                     node_type;
+    typedef SNode                     node_type;
     typedef Hash                      hash_func_type;
-    typedef hash_func_type::hash_type key_type;
+    typedef hash_func_type::hash_type hash_key_type;
 
     //typedef typename allocator_type::template SRebind<node_type>::other node_allocator_type;
     typedef Allocator<node_type> node_allocator_type;
@@ -98,10 +94,8 @@ public: // iterator creation
 
 public: // list operations
 
-    iterator Insert(const_reference _rElement);                             // insert element infront of iterator
+    iterator Insert(const key_type& _rKey, const value_type& _rValue);      // insert element infront of iterator
     iterator Remove(iterator _Pos);                                         // remove element at iterator
-
-    void Insert(const_iterator _First, const_iterator _Last);               // insert elements _First to _Last from another container
 
     void Clear();                                                           // clear the list of all inserted elements
 
@@ -302,15 +296,13 @@ public: // iterator declaration
 
 private: // node declaration
 
-    class CNode
+    struct SNode
     {
-    public:
-
-        node_type* m_pParent;
-        node_type* m_pLeftChild;
-        node_type* m_pRightChild;
-        key_type   m_Key;
-        value_type m_Value;
+        node_type*    m_pParent;
+        node_type*    m_pLeftChild;
+        node_type*    m_pRightChild;
+        hash_key_type m_HashKey;
+        value_type    m_Value;
     };
 
 private: // member
@@ -323,10 +315,11 @@ private: // member
 
 private: // internal methods
 
+    iterator InsertOnChild(node_type** _ppChild, node_type* _pParent, const hash_key_type& _rHashKey, const value_type& _rValue);
 };
 
-template <typename T, template <typename> class Hash, template <typename> class Allocator>
-CBinaryTree<T, Hash, Allocator>::CBinaryTree()
+template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
+CBinaryTree<Key, Value, Hash, Allocator>::CBinaryTree()
     : m_HashFunc()
     , m_Allocator()
     , m_NodeAllocator()
@@ -335,11 +328,40 @@ CBinaryTree<T, Hash, Allocator>::CBinaryTree()
 {
 }
 
-
-template <typename T, template <typename> class Hash, template <typename> class Allocator>
-iterator CBinaryTree<T, Hash, Allocator>::Insert(const_reference _rElement)
+template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
+CBinaryTree<Key, Value, Hash, Allocator>::iterator
+CBinaryTree<Key, Value, Hash, Allocator>::Insert(const key_type& _rKey, const value_type& _rValue)
 {
-    //todo
+    InsertOnNode(m_pRoot, m_HashFunc(_rKey), _rValue);
+}
+
+template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
+CBinaryTree<Key, Value, Hash, Allocator>::iterator
+CBinaryTree<Key, Value, Hash, Allocator>::InsertOnChild(node_type** _ppChild, node_type* _pParent, const hash_key_type& _rHashKey, const value_type& _rValue)
+{
+    if (*_ppChild == 0) // child doesn't exist
+    {
+        *_ppChild = new SNode();
+        pNode->m_pParent = _pParent;
+        pNode->m_pLeftChild = 0;
+        pNode->m_pRightChild = 0;
+        pNode->m_HashKey = _rHashKey;
+        pNode->m_Value = _rValue;
+
+        return *_ppChild;
+    }
+    else if (_rHashKey < (*_ppChild)->m_HashKey)
+    {
+        InsertOnChild(&(*_ppChild)->m_pLeftChild, *_ppChild, _rHashKey, _rValue);
+    }
+    else if (_rHashKey > (*_ppChild)->m_HashKey)
+    {
+        InsertOnChild(&(*_ppChild)->m_pRightChild, *_ppChild, _rHashKey, _rValue);
+    }
+    else
+    {
+        return *_ppChild;
+    }
 }
 
 
