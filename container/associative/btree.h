@@ -352,11 +352,11 @@ CBinaryTree<Key, Value, Hash, Allocator>::InsertOnChild(node_type** _ppChild, no
     }
     else if (_rHashKey < (*_ppChild)->m_HashKey)
     {
-        InsertOnChild(&(*_ppChild)->m_pLeftChild, *_ppChild, _rHashKey, _rValue);
+        return InsertOnChild(&(*_ppChild)->m_pLeftChild, *_ppChild, _rHashKey, _rValue);
     }
     else if (_rHashKey > (*_ppChild)->m_HashKey)
     {
-        InsertOnChild(&(*_ppChild)->m_pRightChild, *_ppChild, _rHashKey, _rValue);
+        return InsertOnChild(&(*_ppChild)->m_pRightChild, *_ppChild, _rHashKey, _rValue);
     }
     else
     {
