@@ -22,7 +22,7 @@
 
 namespace BASE {
     namespace CNT {
-        namespace SEQ {
+        namespace ASOC {
 
             
 using BASE::MEM::CAllocator;
@@ -50,13 +50,13 @@ private: // private forward declarations
 
 public: // public typdefs
 
+    typedef CBinaryTree<Key, Value, Hash, Allocator> self;
+
     typedef Key    key_type;
     typedef Value  value_type;
     typedef size_t size_type;
 
-    typedef Allocator<T> allocator_type;
-
-    typedef CBinaryTree<T, Allocator> self;
+    typedef Allocator<key_type> allocator_type;
 
     typedef CIterator             iterator;
     typedef CConstIterator        const_iterator;
@@ -65,9 +65,9 @@ public: // public typdefs
 
 private: // private typedefs
 
-    typedef SNode                     node_type;
-    typedef Hash                      hash_func_type;
-    typedef hash_func_type::hash_type hash_key_type;
+    typedef SNode                              node_type;
+    typedef Hash<key_type>                     hash_func_type;
+    typedef typename hash_func_type::hash_type hash_key_type;
 
     //typedef typename allocator_type::template SRebind<node_type>::other node_allocator_type;
     typedef Allocator<node_type> node_allocator_type;
@@ -110,23 +110,19 @@ public: // iterator declaration
     {
     public:
 
-        friend typename CBinaryTree<T, Allocator>;
+        friend typename CBinaryTree<Key, Value, Hash, Allocator>;
 
     public:
 
-        typedef T         value_type;
-        typedef T*        pointer;
-        typedef const T*  const_pointer;
-        typedef T&        reference;
-        typedef const T&  const_reference;
+        typedef Value     value_type;
         typedef size_t    size_type;
         typedef ptrdiff_t difference_type;
 
     private:
 
-        typedef CBinaryTree::node_type node_type;
+        typedef typename CBinaryTree::node_type node_type;
         
-        typedef typename CBinaryTree<T, Allocator>::CConstIterator self;
+        typedef CConstIterator self;
 
     public: // ctor, dtor
 
@@ -141,8 +137,8 @@ public: // iterator declaration
         bool operator==(const self& _rRhs) const;
         bool operator!=(const self& _rRhs) const;
 
-        const_reference operator*() const;
-        const_pointer   operator->() const;
+        const value_type& operator*() const;
+        const value_type* operator->() const;
 
         self operator++();
         self operator++(int);
@@ -163,23 +159,19 @@ public: // iterator declaration
     {
     public:
 
-        friend typename CBinaryTree<T, Allocator>;
+        friend typename CBinaryTree<Key, Value, Hash, Allocator>;
 
     public:
 
-        typedef T         value_type;
-        typedef T*        pointer;
-        typedef const T*  const_pointer;
-        typedef T&        reference;
-        typedef const T&  const_reference;
+        typedef Value     value_type;
         typedef size_t    size_type;
         typedef ptrdiff_t difference_type;
 
     private:
 
-        typedef CBinaryTree::node_type node_type;
+        typedef typename CBinaryTree::node_type node_type;
 
-        typedef typename CBinaryTree<T, Allocator>::CIterator self;
+        typedef CIterator self;
 
     public:
 
@@ -191,8 +183,8 @@ public: // iterator declaration
 
     public:
 
-        reference operator*() const;
-        pointer   operator->() const;
+        value_type& operator*() const;
+        value_type* operator->() const;
 
         self operator++();
         self operator++(int);
@@ -204,23 +196,19 @@ public: // iterator declaration
     {
     public:
 
-        friend typename CBinaryTree<T, Allocator>;
+        friend typename CBinaryTree<Key, Value, Hash, Allocator>;
 
     public:
 
-        typedef T         value_type;
-        typedef T*        pointer;
-        typedef const T*  const_pointer;
-        typedef T&        reference;
-        typedef const T&  const_reference;
+        typedef Value     value_type;
         typedef size_t    size_type;
         typedef ptrdiff_t difference_type;
 
     private:
 
-        typedef CBinaryTree::node_type node_type;
+        typedef typename CBinaryTree::node_type node_type;
 
-        typedef typename CBinaryTree<T, Allocator>::CConstReverseIterator self;
+        typedef CConstReverseIterator self;
 
     public: // ctor, dtor
 
@@ -235,8 +223,8 @@ public: // iterator declaration
         bool operator==(const self& _rRhs) const;
         bool operator!=(const self& _rRhs) const;
 
-        const_reference operator*() const;
-        const_pointer   operator->() const;
+        const value_type& operator*() const;
+        const value_type* operator->() const;
 
         self operator++();
         self operator++(int);
@@ -257,23 +245,19 @@ public: // iterator declaration
     {
     public:
 
-        friend typename CBinaryTree<T, Allocator>;
+        friend typename CBinaryTree<Key, Value, Hash, Allocator>;
 
     public:
 
-        typedef T         value_type;
-        typedef T*        pointer;
-        typedef const T*  const_pointer;
-        typedef T&        reference;
-        typedef const T&  const_reference;
+        typedef Value     value_type;
         typedef size_t    size_type;
         typedef ptrdiff_t difference_type;
 
     private:
 
-        typedef CBinaryTree::node_type node_type;
+        typedef typename CBinaryTree::node_type node_type;
 
-        typedef typename CBinaryTree<T, Allocator>::CReverseIterator self;
+        typedef CReverseIterator self;
 
     public:
 
@@ -285,8 +269,8 @@ public: // iterator declaration
 
     public:
 
-        reference operator*() const;
-        pointer   operator->() const;
+        value_type& operator*() const;
+        value_type* operator->() const;
 
         self operator++();
         self operator++(int);
@@ -329,14 +313,19 @@ CBinaryTree<Key, Value, Hash, Allocator>::CBinaryTree()
 }
 
 template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
-CBinaryTree<Key, Value, Hash, Allocator>::iterator
+CBinaryTree<Key, Value, Hash, Allocator>::~CBinaryTree()
+{
+}
+
+template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
+typename CBinaryTree<Key, Value, Hash, Allocator>::iterator
 CBinaryTree<Key, Value, Hash, Allocator>::Insert(const key_type& _rKey, const value_type& _rValue)
 {
     InsertOnNode(m_pRoot, m_HashFunc(_rKey), _rValue);
 }
 
 template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
-CBinaryTree<Key, Value, Hash, Allocator>::iterator
+typename CBinaryTree<Key, Value, Hash, Allocator>::iterator
 CBinaryTree<Key, Value, Hash, Allocator>::InsertOnChild(node_type** _ppChild, node_type* _pParent, const hash_key_type& _rHashKey, const value_type& _rValue)
 {
     if (*_ppChild == 0) // child doesn't exist
@@ -365,7 +354,7 @@ CBinaryTree<Key, Value, Hash, Allocator>::InsertOnChild(node_type** _ppChild, no
 }
 
 
-        } // namespace SEQ
+        } // namespace ASOC
     } // namespace CNT
 } // namespace BASE
 
