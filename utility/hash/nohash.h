@@ -1,5 +1,5 @@
-#ifndef __INCLUDE_DUMMY_HASH_H_
-#define __INCLUDE_DUMMY_HASH_H_
+#ifndef __INCLUDE_NO_HASH_H_
+#define __INCLUDE_NO_HASH_H_
 
 namespace BASE {
     namespace UTIL {
@@ -7,7 +7,7 @@ namespace BASE {
 
 
 template <typename T>
-struct SDummyHash
+struct SNoHash
 {
     typedef T value_type;
     typedef T hash_type;
@@ -28,4 +28,4 @@ struct SDummyHash
     } // namespace UTIL
 } // namespace BASE
 
-#endif // __INCLUDE_JAVA_STRING_HASH_H_
+#endif // __INCLUDE_NO_HASH_H_

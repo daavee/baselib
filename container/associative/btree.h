@@ -3,11 +3,9 @@
 
 /**
  * todo:
- * - ++/--iterator
- * - iterator++/--
- * - iterator op-> and op*
+ * - --iterator
+ * - iterator--
  * - iterator decrement
- * - testing of iterator increment and node removal
  * - everything left ...
  **/
 
@@ -24,7 +22,7 @@
 #include <assert.h>
 #include <exception>
 #include "../../memory/allocator.h"
-#include "../../utility/hash/dummyhash.h"
+#include "../../utility/hash/nohash.h"
 
 namespace BASE {
     namespace CNT {
@@ -32,7 +30,7 @@ namespace BASE {
 
             
 using BASE::MEM::CAllocator;
-using BASE::UTIL::HASH::SDummyHash;
+using BASE::UTIL::HASH::SNoHash;
 
 /**
  * Representing a binary tree.
@@ -43,7 +41,7 @@ using BASE::UTIL::HASH::SDummyHash;
 template <
     typename Key,
     typename Value,
-    template <typename> class Hash = SDummyHash,
+    template <typename> class Hash = SNoHash,
     template <typename> class Allocator = CAllocator
 >
 class CBinaryTree
