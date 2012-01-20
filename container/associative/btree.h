@@ -3,7 +3,12 @@
 
 /**
  * todo:
- * - everything ...
+ * - ++/--iterator
+ * - iterator++/--
+ * - iterator op-> and op*
+ * - iterator decrement
+ * - testing of iterator increment and node removal
+ * - everything left ...
  **/
 
 /************************************************************************************
@@ -101,6 +106,10 @@ public: // list operations
 
     iterator Insert(const key_type& _rKey, const value_type& _rValue);      // insert element infront of iterator
     iterator Remove(iterator _Pos);                                         // remove element at iterator
+    iterator Remove(const key_type& _rKey);                                 // remove element by key
+
+    iterator          Find(const key_type& _rKey) const;                          // find element by key
+    const value_type& GetElement(const key_type& _rKey) const;                    // get element by key
 
     void Clear();                                                           // clear the list of all inserted elements
 
@@ -307,6 +316,8 @@ private: // member
 private: // internal methods
 
     iterator InsertOnChild(node_type** _ppChild, node_type* _pParent, const hash_key_type& _rHashKey, const value_type& _rValue);
+    iterator FindOnChild(node_type* _pChild, const hash_key_type& _rHashKey);
+    iterator FindLowestOnChild(node_type* _pChild, node_type* _pParent);
 };
 
 template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
@@ -326,14 +337,14 @@ CBinaryTree<Key, Value, Hash, Allocator>::~CBinaryTree()
 
 template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
 typename CBinaryTree<Key, Value, Hash, Allocator>::iterator
-CBinaryTree<Key, Value, Hash, Allocator>::Insert(const key_type& _rKey, const value_type& _rValue)
+    CBinaryTree<Key, Value, Hash, Allocator>::Insert(const key_type& _rKey, const value_type& _rValue)
 {
     return InsertOnChild(&m_pRoot, 0, m_HashFunc(_rKey), _rValue);
 }
 
 template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
 typename CBinaryTree<Key, Value, Hash, Allocator>::iterator
-CBinaryTree<Key, Value, Hash, Allocator>::InsertOnChild(node_type** _ppChild, node_type* _pParent,
+    CBinaryTree<Key, Value, Hash, Allocator>::InsertOnChild(node_type** _ppChild, node_type* _pParent,
     const hash_key_type& _rHashKey, const value_type& _rValue)
 {
     if (*_ppChild == 0) // child doesn't exist
@@ -351,11 +362,127 @@ CBinaryTree<Key, Value, Hash, Allocator>::InsertOnChild(node_type** _ppChild, no
     {
         return InsertOnChild(&(*_ppChild)->m_pRightChild, *_ppChild, _rHashKey, _rValue);
     }
+
+    return *_ppChild;
+}
+
+template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
+typename CBinaryTree<Key, Value, Hash, Allocator>::iterator
+    CBinaryTree<Key, Value, Hash, Allocator>::Remove(const key_type& _rKey)
+{
+    return Remove(Find(_rKey));
+}
+
+template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
+typename CBinaryTree<Key, Value, Hash, Allocator>::iterator
+    CBinaryTree<Key, Value, Hash, Allocator>::Remove(iterator _It)
+{
+    assert(_It != End() && "Invalid iterator for removal.");
+
+    node_type** ppParentLink = 0; // pointer to the parent's pointer to our node
+    node_type*  pNode = _It.m_pNode; // for convenience
+    node_type*  pParent = pNode->m_pParent; // also convenience
+    node_type*  pNextNode = (++_It).m_pNode; // getting next node for further actions and return value
+
+    if (pNode->m_pParent == 0)
+    { // setting ppParentLink
+        ppParentLink = &m_pRoot;
+    }
+    else if (pNode->m_pParent->m_pLeftChild == pNode)
+    {
+        ppParentLink = &pNode->m_pParent->m_pLeftChild;
+    }
     else
     {
-        return *_ppChild;
+        ppParentLink = &pNode->m_pParent->m_pRightChild;
     }
+
+    if (pNode->m_pLeftChild == 0 && pNode->m_pRightChild == 0)
+    { // leaf node
+        *ppParentLink = 0;
+    }
+    else if (pNode->m_pLeftChild == 0)
+    { // only right leaf
+        pNode->m_pRightChild->m_pParent = pParent;
+        *ppParentLink = pNode->m_pRightChild;
+    }
+    else if (pNode->m_pRightChild == 0)
+    { // only left leaf
+        pNode->m_pLeftChild->m_pParent = pParent;
+        ppParentLink = pNode->m_pLeftChild;
+    }
+    else
+    { // node has two leaves
+        *ppParentLink = pNextNode;
+
+        if (pNextNode->m_pRightChild != 0)
+        { // does the next node have a right child
+            pNextNode->m_pRightChild->m_pParent = pNextNode->m_pParent;
+        }
+        
+        if (pNextNode->m_pParent->m_pLeftChild == pNextNode)
+        { // where did the next node sit on his parent
+            pNextNode->m_pParent->m_pLeftChild = pNextNode->m_pRightChild; // could be 0, but no problem
+        }
+        else
+        {
+            pNextNode->m_pParent->m_pRightChild = pNextNode->m_pRightChild; // could be 0, but no problem
+        }
+        pNextNode->m_pParent = pNode->m_pParent;
+        pNextNode->m_pLeftChild = pNode->m_pLeftChild;
+        pNextNode->m_pRightChild = pNode->m_pRightChild;
+    }
+    
+    delete pNode;
+
+    return pNextNode;
 }
+
+template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
+typename CBinaryTree<Key, Value, Hash, Allocator>::iterator
+    CBinaryTree<Key, Value, Hash, Allocator>::Find(const key_type& _rKey)
+{
+    return FindOnChild(m_pRoot, m_HashFunc(_rKey));
+}
+
+template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
+typename CBinaryTree<Key, Value, Hash, Allocator>::iterator
+    CBinaryTree<Key, Value, Hash, Allocator>::FindOnChild(node_type* _pChild, const hash_key_type& _rHashKey)
+{
+    if      (_pChild == 0)                   return 0;
+    else if (_rHashKey < _pChild->m_HashKey) return FindOnChild(_pChild->m_pLeftChild, _rHashKey);
+    else if (_rHashKey > _pChild->m_HashKey) return FindOnChild(_pChild->m_pRightChild, _rHashKey);
+
+    return _pChild;
+}
+
+template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
+typename CBinaryTree<Key, Value, Hash, Allocator>::iterator
+    CBinaryTree<Key, Value, Hash, Allocator>::FindLowestOnChild(node_type* _pChild, node_type* _pParent)
+{
+    if (_pChild == 0) return _pParent;
+
+    return FindLowestOnChild(_pChild->m_pLeftChild, _pChild);
+}
+
+
+template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
+bool
+    CBinaryTree<Key, Value, Hash, Allocator>::IsEmpty() const
+{
+    return m_Size == 0;
+}
+
+template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
+typename CBinaryTree<Key, Value, Hash, Allocator>::size_type
+    CBinaryTree<Key, Value, Hash, Allocator>::GetElementCount() const
+{
+    return m_Size;
+}
+
+//////////////////////////////////////////////////////////////////////////
+// ITERATOR - SECTION
+//////////////////////////////////////////////////////////////////////////
 
 template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
 CBinaryTree<Key, Value, Hash, Allocator>::CConstIterator::CConstIterator(node_type* _pNode)
@@ -364,10 +491,56 @@ CBinaryTree<Key, Value, Hash, Allocator>::CConstIterator::CConstIterator(node_ty
 }
 
 template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
+void 
+    CBinaryTree<Key, Value, Hash, Allocator>::CConstIterator::Increment()
+{
+    // we basically have to get one step to the right (child) and then left as much as possible
+    // or find the first parent, that we are left of
+    node_type* CurrentNode = m_pNode;
+
+    if (CurrentNode->m_pRightNode != 0)
+    { // we have a right child
+        while (CurrentNode->m_pLeftChild != 0)
+        { // go left all the way
+            CurrentNode = CurrentNode->m_pLeftChild;
+        }
+    }
+    else
+    { // we have no right child
+        while (CurrentNode->m_pParent != 0 && CurrentNode->m_pParent->m_pRightChild == CurrentNode)
+        { // go top, until we are on the left side of our parent
+            CurrentNode = CurrentNode->m_pParent;
+        }
+
+        if (CurrentNode->m_pParent == 0)
+        { // we arrived the root and found nothing
+            CurrentNode = 0;
+        }
+        else
+        { // we are the left child
+            CurrentNode = CurrentNode->m_pParent;
+        }
+    }
+
+    m_pNode = CurrentNode;
+}
+
+template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
+void 
+    CBinaryTree<Key, Value, Hash, Allocator>::CConstIterator::Decrement()
+{
+
+}
+
+template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
 CBinaryTree<Key, Value, Hash, Allocator>::CIterator::CIterator(node_type* _pNode)
     : CConstIterator(_pNode)
 {
 }
+
+//////////////////////////////////////////////////////////////////////////
+// SNODE - SECTION
+//////////////////////////////////////////////////////////////////////////
 
 template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
 CBinaryTree<Key, Value, Hash, Allocator>::SNode::SNode(node_type* _pParent, node_type* _pLeftChild,
