@@ -468,7 +468,7 @@ template <typename T, template <typename> class Allocator>
 typename CDoubleLinkedList<T, Allocator>::CIterator
 CDoubleLinkedList<T, Allocator>::CIterator::operator++()
 {
-    this->Increment();
+    Increment();
     return *this;
 }
 
@@ -477,7 +477,7 @@ typename CDoubleLinkedList<T, Allocator>::CIterator
 CDoubleLinkedList<T, Allocator>::CIterator::operator++(int)
 {
     self Temp = *this;
-    this->Increment();
+    Increment();
     return Temp;
 }
 
@@ -485,7 +485,7 @@ template <typename T, template <typename> class Allocator>
 typename CDoubleLinkedList<T, Allocator>::CIterator
 CDoubleLinkedList<T, Allocator>::CIterator::operator--()
 {
-    this->Decrement();
+    Decrement();
     return *this;
 }
 
@@ -494,7 +494,7 @@ typename CDoubleLinkedList<T, Allocator>::CIterator
 CDoubleLinkedList<T, Allocator>::CIterator::operator--(int)
 {
     self Temp = *this;
-    this->Decrement();
+    Decrement();
     return Temp;
 }
 
