@@ -3,7 +3,6 @@
 
 namespace BASE {
     namespace UTIL {
-        namespace HASH {
 
 
 template <typename T>
@@ -70,7 +69,6 @@ struct SJavaStringHash<char*>
 };
 
 
-        } // namespace HASH
     } // namespace UTIL
 } // namespace BASE
 

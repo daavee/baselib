@@ -23,7 +23,6 @@
 
 namespace BASE {
     namespace CNT {
-        namespace SEQ {
 
             
 using BASE::MEM::CAllocator;
@@ -884,7 +883,6 @@ CDoubleLinkedList<T, Allocator>::GetIteratorByIndex(index_type _Index)
 }
 
 
-        } // namespace SEQ
     } // namespace CNT
 } // namespace BASE
 

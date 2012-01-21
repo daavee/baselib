@@ -3,7 +3,6 @@
 
 namespace BASE {
     namespace UTIL {
-        namespace HASH {
 
 
 template <typename T>
@@ -24,7 +23,6 @@ struct SNoHash
 };
 
 
-        } // namespace HASH
     } // namespace UTIL
 } // namespace BASE
 

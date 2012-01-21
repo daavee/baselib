@@ -25,7 +25,6 @@
 
 namespace BASE {
     namespace CNT {
-        namespace ASOC {
 
             
 using BASE::MEM::CAllocator;
@@ -81,7 +80,6 @@ private: // member
 };
 
 
-        } // namespace ASOC
     } // namespace CNT
 } // namespace BASE
 

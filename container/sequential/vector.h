@@ -16,7 +16,6 @@
 
 namespace BASE {
     namespace CNT {
-        namespace SEQ {
 
             
 using BASE::MEM::CAllocator;
@@ -27,7 +26,6 @@ class CVector
 };
 
 
-        } // namespace SEQ
     } // namespace CNT
 } // namespace BASE
 
