@@ -3,9 +3,8 @@
 
 /**
  * todo:
- * - --iterator
- * - iterator--
- * - iterator decrement
+ * - reverse iterator
+ * - c-string compare
  * - everything left ...
  **/
 
@@ -29,7 +28,7 @@ namespace BASE {
 
             
 using BASE::MEM::CAllocator;
-using BASE::UTIL::HASH::SNoHash;
+using BASE::UTIL::SNoHash;
 
 /**
  * Representing a binary tree.
@@ -97,7 +96,7 @@ public: // iterator creation
     reverse_iterator       REnd();                                          // returns reverse_iterator to the first invalid element
     const_reverse_iterator REnd() const;                                    // returns const_reverse_iterator to the first invalid element
 
-public: // list operations
+public: // public operations
 
     iterator Insert(const key_type& _rKey, const value_type& _rValue);      // insert element infront of iterator
     iterator Remove(iterator _Pos);                                         // remove element at iterator
@@ -108,7 +107,7 @@ public: // list operations
 
     void Clear();                                                           // clear the list of all inserted elements
 
-public: // list properties
+public: // public properties
 
     bool      IsEmpty() const;                                              // return if list is empty
     size_type GetElementCount() const;                                      // return number of elements in list
@@ -318,7 +317,6 @@ template <typename Key, typename Value, template <typename> class Hash, template
 CBinaryTree<Key, Value, Hash, Allocator>::CBinaryTree()
     : m_HashFunc()
     , m_Allocator()
-    , m_NodeAllocator()
     , m_pRoot(0)
     , m_Size(0)
 {
@@ -327,6 +325,7 @@ CBinaryTree<Key, Value, Hash, Allocator>::CBinaryTree()
 template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
 CBinaryTree<Key, Value, Hash, Allocator>::~CBinaryTree()
 {
+    Clear();
 }
 
 template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
@@ -344,6 +343,20 @@ typename CBinaryTree<Key, Value, Hash, Allocator>::const_iterator
 }
 
 template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
+typename CBinaryTree<Key, Value, Hash, Allocator>::reverse_iterator
+    CBinaryTree<Key, Value, Hash, Allocator>::RBegin()
+{
+    return FindMostRightChild(m_pRoot, 0);
+}
+
+template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
+typename CBinaryTree<Key, Value, Hash, Allocator>::const_reverse_iterator
+    CBinaryTree<Key, Value, Hash, Allocator>::RBegin() const
+{
+    return FindMostRightChild(m_pRoot, 0);
+}
+
+template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
 typename CBinaryTree<Key, Value, Hash, Allocator>::iterator
     CBinaryTree<Key, Value, Hash, Allocator>::End()
 {
@@ -353,6 +366,20 @@ typename CBinaryTree<Key, Value, Hash, Allocator>::iterator
 template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
 typename CBinaryTree<Key, Value, Hash, Allocator>::const_iterator
     CBinaryTree<Key, Value, Hash, Allocator>::End() const
+{
+    return 0;
+}
+
+template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
+typename CBinaryTree<Key, Value, Hash, Allocator>::reverse_iterator
+    CBinaryTree<Key, Value, Hash, Allocator>::REnd()
+{
+    return 0;
+}
+
+template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
+typename CBinaryTree<Key, Value, Hash, Allocator>::const_reverse_iterator
+    CBinaryTree<Key, Value, Hash, Allocator>::REnd() const
 {
     return 0;
 }
@@ -430,6 +457,17 @@ typename CBinaryTree<Key, Value, Hash, Allocator>::iterator
     }
     
     return pNextNode;
+}
+
+template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
+void
+    CBinaryTree<Key, Value, Hash, Allocator>::Clear()
+{
+    // could think of some more effective ways
+    for (auto It = Begin(); It != End();)
+    {
+        Remove(It++);
+    }
 }
 
 template <typename Key, typename Value, template <typename> class Hash, template <typename> class Allocator>
