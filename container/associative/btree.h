@@ -463,7 +463,7 @@ template <typename Key, typename Value, template <typename> class Hash, template
 void
     CBinaryTree<Key, Value, Hash, Allocator>::Clear()
 {
-    // could think of some more effective ways
+    // could think of some more effective ways, that cause no pointer redirection
     for (auto It = Begin(); It != End();)
     {
         Remove(It++);
