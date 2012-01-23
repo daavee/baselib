@@ -20,7 +20,7 @@ namespace BASE {
             
 using BASE::MEM::CAllocator;
 
-template <typename T, typename Allocator = CAllocator<T>>
+template <typename T, typename TAllocator = CAllocator<T>>
 class CVector
 {
 };

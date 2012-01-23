@@ -29,11 +29,11 @@ namespace BASE {
             
 using BASE::MEM::CAllocator;
 
-template <typename Key,                         // key type
-    typename Value,                             // value type
-    typename Hash = CHash<Key>,                 // hash type including hash algorithm
+template <typename TKey,                         // key type
+    typename TValue,                             // value type
+    typename THash = CHash<TKey>,                 // hash type including hash algorithm
     //typename AddressingPolicy,                  // policy for addressing (open, closed, etc.)
-    typename Allocator = CAllocator<Value>>     // allocator
+    typename TAllocator = CAllocator<TValue>>     // allocator
 class CHashTable
 {
 public: // public forward declarations
@@ -44,17 +44,17 @@ private: // private forward declarations
 
 public: // public typedefs
 
-    typedef Key               key_type;
-    typedef Value             value_type;
+    typedef TKey               key_type;
+    typedef TValue             value_type;
     typedef value_type*       pointer;
     typedef const value_type* const_pointer;
     typedef value_type&       reference;
     typedef const value_type& const_reference;
     typedef size_t            size_type;
 
-    typedef Hash              hash_type;
+    typedef THash              hash_type;
     //typedef AddressingPolicy  addressing_policy_type;
-    typedef Allocator         allocator_type;
+    typedef TAllocator         allocator_type;
 
 private: // private typedefs
 

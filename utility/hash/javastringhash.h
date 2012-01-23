@@ -1,6 +1,8 @@
 #ifndef __INCLUDE_JAVA_STRING_HASH_H_
 #define __INCLUDE_JAVA_STRING_HASH_H_
 
+#include "keyhash.h"
+
 namespace BASE {
     namespace UTIL {
 
@@ -8,10 +10,11 @@ namespace BASE {
 template <typename T>
 struct SJavaStringHash
 {
-    typedef T            value_type;
-    typedef unsigned int hash_type;
+    typedef T                               value_type;
+    typedef unsigned int                    hash_type;
+    typedef SKeyHash<value_type, hash_type> key_hash_type;
 
-    hash_type operator()(const value_type& _rValue) const
+    key_hash_type operator()(const value_type& _rValue) const
     {
         hash_type Hash = 0;
         const unsigned char* Byte = reinterpret_cast<const unsigned char*>(&_rValue);
@@ -22,10 +25,10 @@ struct SJavaStringHash
             Hash += Byte[i];
         }
 
-        return Hash;
+        return key_hash_type(_rValue, Hash);
     }
 
-    hash_type operator()(const value_type* _pValue) const
+    key_hash_type operator()(const value_type* _pValue) const
     {
         return operator()(*_pValue);
     }
@@ -50,10 +53,11 @@ struct SJavaStringHash<const T*> : SJavaStringHash<T*>
 template <>
 struct SJavaStringHash<char*>
 {
-    typedef char         value_type;
-    typedef unsigned int hash_type;
+    typedef const char*                     value_type;
+    typedef unsigned int                    hash_type;
+    typedef SKeyHash<value_type, hash_type> key_hash_type;
 
-    hash_type operator()(const char* _pValue) const
+    key_hash_type operator()(const char* _pValue) const
     {
         hash_type Hash = 0;
         const unsigned char* Byte = reinterpret_cast<const unsigned char*>(_pValue);
@@ -64,7 +68,7 @@ struct SJavaStringHash<char*>
             Hash += Byte[i];
         }
 
-        return Hash;
+        return key_hash_type(_pValue, Hash);
     }
 };
 

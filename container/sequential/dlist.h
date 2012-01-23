@@ -33,7 +33,7 @@ using BASE::MEM::CAllocator;
  * of allocated memory for copies. Allocator has to be from
  * this library or wrapped with CStdAllocatorWrapper.
  **/
-template <typename T, template <typename> class Allocator = CAllocator>
+template <typename T, template <typename> class TAllocator = CAllocator>
 class CDoubleLinkedList
 {
 public: // public forward declarations
@@ -58,9 +58,9 @@ public: // public typdefs
     typedef size_t            size_type;
     typedef int               index_type;
 
-    typedef Allocator<T>      allocator_type;
+    typedef TAllocator<T>      allocator_type;
 
-    typedef CDoubleLinkedList<T, Allocator> self;
+    typedef CDoubleLinkedList<T, TAllocator> self;
 
     typedef CIterator             iterator;
     typedef CConstIterator        const_iterator;
@@ -73,12 +73,12 @@ private: // private typedefs
     typedef SNode node_type;
 
     //typedef typename allocator_type::template SRebind<node_type>::other node_allocator_type;
-    typedef Allocator<node_type> node_allocator_type;
+    typedef TAllocator<node_type> node_allocator_type;
 
 public: // ctor, dtor
 
     CDoubleLinkedList(const allocator_type& _Allocator = allocator_type());
-    CDoubleLinkedList(const CDoubleLinkedList<T, Allocator>& _rList);
+    CDoubleLinkedList(const CDoubleLinkedList<T, TAllocator>& _rList);
     ~CDoubleLinkedList();
 
 public: // iterator creation
@@ -125,7 +125,7 @@ public: // iterator declaration
     {
     public:
 
-        friend typename CDoubleLinkedList<T, Allocator>;
+        friend typename CDoubleLinkedList<T, TAllocator>;
 
     public:
 
@@ -142,7 +142,7 @@ public: // iterator declaration
         typedef SLink link_type;
         typedef SNode node_type;
         
-        typedef typename CDoubleLinkedList<T, Allocator>::CConstIterator self;
+        typedef typename CDoubleLinkedList<T, TAllocator>::CConstIterator self;
 
     public: // ctor, dtor
 
@@ -179,7 +179,7 @@ public: // iterator declaration
     {
     public:
 
-        friend typename CDoubleLinkedList<T, Allocator>;
+        friend typename CDoubleLinkedList<T, TAllocator>;
 
     public:
 
@@ -196,7 +196,7 @@ public: // iterator declaration
         typedef SLink link_type;
         typedef SNode node_type;
 
-        typedef typename CDoubleLinkedList<T, Allocator>::CIterator self;
+        typedef typename CDoubleLinkedList<T, TAllocator>::CIterator self;
 
     public:
 
@@ -221,7 +221,7 @@ public: // iterator declaration
     {
     public:
 
-        friend typename CDoubleLinkedList<T, Allocator>;
+        friend typename CDoubleLinkedList<T, TAllocator>;
 
     public:
 
@@ -238,7 +238,7 @@ public: // iterator declaration
         typedef SLink link_type;
         typedef SNode node_type;
 
-        typedef typename CDoubleLinkedList<T, Allocator>::CConstReverseIterator self;
+        typedef typename CDoubleLinkedList<T, TAllocator>::CConstReverseIterator self;
 
     public: // ctor, dtor
 
@@ -275,7 +275,7 @@ public: // iterator declaration
     {
     public:
 
-        friend typename CDoubleLinkedList<T, Allocator>;
+        friend typename CDoubleLinkedList<T, TAllocator>;
 
     public:
 
@@ -292,7 +292,7 @@ public: // iterator declaration
         typedef SLink link_type;
         typedef SNode node_type;
 
-        typedef typename CDoubleLinkedList<T, Allocator>::CReverseIterator self;
+        typedef typename CDoubleLinkedList<T, TAllocator>::CReverseIterator self;
 
     public:
 
@@ -341,92 +341,92 @@ private: // internal methods
  * CONST ITERATOR SUBSECTION
  *************************************************************************/
 
-template <typename T, template <typename> class Allocator>
-CDoubleLinkedList<T, Allocator>::CConstIterator::CConstIterator(link_type* _pLink)
+template <typename T, template <typename> class TAllocator>
+CDoubleLinkedList<T, TAllocator>::CConstIterator::CConstIterator(link_type* _pLink)
     : m_pLink(_pLink)
 {
 
 }
 
-template <typename T, template <typename> class Allocator>
-CDoubleLinkedList<T, Allocator>::CConstIterator::CConstIterator(const self& _rIt)
+template <typename T, template <typename> class TAllocator>
+CDoubleLinkedList<T, TAllocator>::CConstIterator::CConstIterator(const self& _rIt)
     : m_pLink(_rIt.m_pLink)
 {
 
 }
 
-template <typename T, template <typename> class Allocator>
+template <typename T, template <typename> class TAllocator>
 bool
-CDoubleLinkedList<T, Allocator>::CConstIterator::operator==(const self& _rRhs) const
+CDoubleLinkedList<T, TAllocator>::CConstIterator::operator==(const self& _rRhs) const
 {
     return this->m_pLink == _rRhs.m_pLink;
 }
 
-template <typename T, template <typename> class Allocator>
+template <typename T, template <typename> class TAllocator>
 bool
-CDoubleLinkedList<T, Allocator>::CConstIterator::operator!=(const self& _rRhs) const
+CDoubleLinkedList<T, TAllocator>::CConstIterator::operator!=(const self& _rRhs) const
 {
     return this->m_pLink != _rRhs.m_pLink; // oder: return *this == _rRhs;
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::CConstIterator::const_reference
-CDoubleLinkedList<T, Allocator>::CConstIterator::operator*() const
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::CConstIterator::const_reference
+CDoubleLinkedList<T, TAllocator>::CConstIterator::operator*() const
 {
     return static_cast<node_type*>(m_pLink)->m_Element;
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::CConstIterator::const_pointer
-CDoubleLinkedList<T, Allocator>::CConstIterator::operator->() const
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::CConstIterator::const_pointer
+CDoubleLinkedList<T, TAllocator>::CConstIterator::operator->() const
 {
     return &(operator*());
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::CConstIterator
-CDoubleLinkedList<T, Allocator>::CConstIterator::operator++()
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::CConstIterator
+CDoubleLinkedList<T, TAllocator>::CConstIterator::operator++()
 {
     this->Increment();
     return *this;
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::CConstIterator
-CDoubleLinkedList<T, Allocator>::CConstIterator::operator++(int)
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::CConstIterator
+CDoubleLinkedList<T, TAllocator>::CConstIterator::operator++(int)
 {
     self Temp = *this;
     this->Increment();
     return Temp;
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::CConstIterator
-CDoubleLinkedList<T, Allocator>::CConstIterator::operator--()
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::CConstIterator
+CDoubleLinkedList<T, TAllocator>::CConstIterator::operator--()
 {
     this->Decrement();
     return *this;
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::CConstIterator
-CDoubleLinkedList<T, Allocator>::CConstIterator::operator--(int)
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::CConstIterator
+CDoubleLinkedList<T, TAllocator>::CConstIterator::operator--(int)
 {
     self Temp = *this;
     this->Decrement();
     return Temp;
 }
 
-template <typename T, template <typename> class Allocator>
+template <typename T, template <typename> class TAllocator>
 void
-CDoubleLinkedList<T, Allocator>::CConstIterator::Increment()
+CDoubleLinkedList<T, TAllocator>::CConstIterator::Increment()
 {
     m_pLink = m_pLink->m_pNext;
 }
 
-template <typename T, template <typename> class Allocator>
+template <typename T, template <typename> class TAllocator>
 void
-CDoubleLinkedList<T, Allocator>::CConstIterator::Decrement()
+CDoubleLinkedList<T, TAllocator>::CConstIterator::Decrement()
 {
     m_pLink = m_pLink->m_pPrev;
 }
@@ -435,62 +435,62 @@ CDoubleLinkedList<T, Allocator>::CConstIterator::Decrement()
  * ITERATOR SUBSECTION
  *************************************************************************/
 
-template <typename T, template <typename> class Allocator>
-CDoubleLinkedList<T, Allocator>::CIterator::CIterator(link_type* _pLink)
+template <typename T, template <typename> class TAllocator>
+CDoubleLinkedList<T, TAllocator>::CIterator::CIterator(link_type* _pLink)
     : CConstIterator(_pLink)
 {
 
 }
 
-template <typename T, template <typename> class Allocator>
-CDoubleLinkedList<T, Allocator>::CIterator::CIterator(const self& _rIt)
+template <typename T, template <typename> class TAllocator>
+CDoubleLinkedList<T, TAllocator>::CIterator::CIterator(const self& _rIt)
     : CConstIterator(_rIt)
 {
 
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::CIterator::reference
-CDoubleLinkedList<T, Allocator>::CIterator::operator*() const
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::CIterator::reference
+CDoubleLinkedList<T, TAllocator>::CIterator::operator*() const
 {
     return static_cast<node_type*>(m_pLink)->m_Element;
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::CIterator::pointer
-CDoubleLinkedList<T, Allocator>::CIterator::operator->() const
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::CIterator::pointer
+CDoubleLinkedList<T, TAllocator>::CIterator::operator->() const
 {
     return &(operator*());
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::CIterator
-CDoubleLinkedList<T, Allocator>::CIterator::operator++()
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::CIterator
+CDoubleLinkedList<T, TAllocator>::CIterator::operator++()
 {
     Increment();
     return *this;
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::CIterator
-CDoubleLinkedList<T, Allocator>::CIterator::operator++(int)
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::CIterator
+CDoubleLinkedList<T, TAllocator>::CIterator::operator++(int)
 {
     self Temp = *this;
     Increment();
     return Temp;
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::CIterator
-CDoubleLinkedList<T, Allocator>::CIterator::operator--()
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::CIterator
+CDoubleLinkedList<T, TAllocator>::CIterator::operator--()
 {
     Decrement();
     return *this;
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::CIterator
-CDoubleLinkedList<T, Allocator>::CIterator::operator--(int)
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::CIterator
+CDoubleLinkedList<T, TAllocator>::CIterator::operator--(int)
 {
     self Temp = *this;
     Decrement();
@@ -501,92 +501,92 @@ CDoubleLinkedList<T, Allocator>::CIterator::operator--(int)
  * CONST REVERSE ITERATOR SUBSECTION
  *************************************************************************/
 
-template <typename T, template <typename> class Allocator>
-CDoubleLinkedList<T, Allocator>::CConstReverseIterator::CConstReverseIterator(link_type* _pLink)
+template <typename T, template <typename> class TAllocator>
+CDoubleLinkedList<T, TAllocator>::CConstReverseIterator::CConstReverseIterator(link_type* _pLink)
     : m_pLink(_pLink)
 {
 
 }
 
-template <typename T, template <typename> class Allocator>
-CDoubleLinkedList<T, Allocator>::CConstReverseIterator::CConstReverseIterator(const self& _rIt)
+template <typename T, template <typename> class TAllocator>
+CDoubleLinkedList<T, TAllocator>::CConstReverseIterator::CConstReverseIterator(const self& _rIt)
     : m_pLink(_rIt.m_pLink)
 {
 
 }
 
-template <typename T, template <typename> class Allocator>
+template <typename T, template <typename> class TAllocator>
 bool
-CDoubleLinkedList<T, Allocator>::CConstReverseIterator::operator==(const self& _rRhs) const
+CDoubleLinkedList<T, TAllocator>::CConstReverseIterator::operator==(const self& _rRhs) const
 {
     return this->m_pLink == _rRhs.m_pLink;
 }
 
-template <typename T, template <typename> class Allocator>
+template <typename T, template <typename> class TAllocator>
 bool
-CDoubleLinkedList<T, Allocator>::CConstReverseIterator::operator!=(const self& _rRhs) const
+CDoubleLinkedList<T, TAllocator>::CConstReverseIterator::operator!=(const self& _rRhs) const
 {
     return this->m_pLink != _rRhs.m_pLink; // oder: return *this == _rRhs;
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::CConstReverseIterator::const_reference
-CDoubleLinkedList<T, Allocator>::CConstReverseIterator::operator*() const
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::CConstReverseIterator::const_reference
+CDoubleLinkedList<T, TAllocator>::CConstReverseIterator::operator*() const
 {
     return static_cast<node_type*>(m_pLink)->m_Element;
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::CConstReverseIterator::const_pointer
-CDoubleLinkedList<T, Allocator>::CConstReverseIterator::operator->() const
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::CConstReverseIterator::const_pointer
+CDoubleLinkedList<T, TAllocator>::CConstReverseIterator::operator->() const
 {
     return &(operator*());
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::CConstReverseIterator
-CDoubleLinkedList<T, Allocator>::CConstReverseIterator::operator++()
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::CConstReverseIterator
+CDoubleLinkedList<T, TAllocator>::CConstReverseIterator::operator++()
 {
     this->Increment();
     return *this;
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::CConstReverseIterator
-CDoubleLinkedList<T, Allocator>::CConstReverseIterator::operator++(int)
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::CConstReverseIterator
+CDoubleLinkedList<T, TAllocator>::CConstReverseIterator::operator++(int)
 {
     self Temp = *this;
     this->Increment();
     return Temp;
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::CConstReverseIterator
-CDoubleLinkedList<T, Allocator>::CConstReverseIterator::operator--()
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::CConstReverseIterator
+CDoubleLinkedList<T, TAllocator>::CConstReverseIterator::operator--()
 {
     this->Decrement();
     return *this;
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::CConstReverseIterator
-CDoubleLinkedList<T, Allocator>::CConstReverseIterator::operator--(int)
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::CConstReverseIterator
+CDoubleLinkedList<T, TAllocator>::CConstReverseIterator::operator--(int)
 {
     self Temp = *this;
     this->Decrement();
     return Temp;
 }
 
-template <typename T, template <typename> class Allocator>
+template <typename T, template <typename> class TAllocator>
 void
-CDoubleLinkedList<T, Allocator>::CConstReverseIterator::Increment()
+CDoubleLinkedList<T, TAllocator>::CConstReverseIterator::Increment()
 {
     m_pLink = m_pLink->m_pPrev;
 }
 
-template <typename T, template <typename> class Allocator>
+template <typename T, template <typename> class TAllocator>
 void
-CDoubleLinkedList<T, Allocator>::CConstReverseIterator::Decrement()
+CDoubleLinkedList<T, TAllocator>::CConstReverseIterator::Decrement()
 {
     m_pLink = m_pLink->m_pNext;
 }
@@ -595,62 +595,62 @@ CDoubleLinkedList<T, Allocator>::CConstReverseIterator::Decrement()
  * REVERSE ITERATOR SUBSECTION
  *************************************************************************/
 
-template <typename T, template <typename> class Allocator>
-CDoubleLinkedList<T, Allocator>::CReverseIterator::CReverseIterator(link_type* _pLink)
+template <typename T, template <typename> class TAllocator>
+CDoubleLinkedList<T, TAllocator>::CReverseIterator::CReverseIterator(link_type* _pLink)
     : CConstReverseIterator(_pLink)
 {
 
 }
 
-template <typename T, template <typename> class Allocator>
-CDoubleLinkedList<T, Allocator>::CReverseIterator::CReverseIterator(const self& _rIt)
+template <typename T, template <typename> class TAllocator>
+CDoubleLinkedList<T, TAllocator>::CReverseIterator::CReverseIterator(const self& _rIt)
     : CConstReverseIterator(_rIt)
 {
 
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::CReverseIterator::reference
-CDoubleLinkedList<T, Allocator>::CReverseIterator::operator*() const
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::CReverseIterator::reference
+CDoubleLinkedList<T, TAllocator>::CReverseIterator::operator*() const
 {
     return static_cast<node_type*>(m_pLink)->m_Element;
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::CReverseIterator::pointer
-CDoubleLinkedList<T, Allocator>::CReverseIterator::operator->() const
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::CReverseIterator::pointer
+CDoubleLinkedList<T, TAllocator>::CReverseIterator::operator->() const
 {
     return &(operator*());
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::CReverseIterator
-CDoubleLinkedList<T, Allocator>::CReverseIterator::operator++()
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::CReverseIterator
+CDoubleLinkedList<T, TAllocator>::CReverseIterator::operator++()
 {
     this->Increment();
     return *this;
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::CReverseIterator
-CDoubleLinkedList<T, Allocator>::CReverseIterator::operator++(int)
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::CReverseIterator
+CDoubleLinkedList<T, TAllocator>::CReverseIterator::operator++(int)
 {
     self Temp = *this;
     this->Increment();
     return Temp;
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::CReverseIterator
-CDoubleLinkedList<T, Allocator>::CReverseIterator::operator--()
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::CReverseIterator
+CDoubleLinkedList<T, TAllocator>::CReverseIterator::operator--()
 {
     this->Decrement();
     return *this;
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::CReverseIterator
-CDoubleLinkedList<T, Allocator>::CReverseIterator::operator--(int)
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::CReverseIterator
+CDoubleLinkedList<T, TAllocator>::CReverseIterator::operator--(int)
 {
     self Temp = *this;
     this->Decrement();
@@ -661,8 +661,8 @@ CDoubleLinkedList<T, Allocator>::CReverseIterator::operator--(int)
  * DOUBLE LINKED LIST SUBSECTION
  *************************************************************************/
 
-template <typename T, template <typename> class Allocator>
-CDoubleLinkedList<T, Allocator>::CDoubleLinkedList(const allocator_type& _Allocator)
+template <typename T, template <typename> class TAllocator>
+CDoubleLinkedList<T, TAllocator>::CDoubleLinkedList(const allocator_type& _Allocator)
     : m_Allocator(_Allocator)
     , m_Anchor()
 {
@@ -670,8 +670,8 @@ CDoubleLinkedList<T, Allocator>::CDoubleLinkedList(const allocator_type& _Alloca
     m_Anchor.m_pPrev = &m_Anchor;
 }
 
-template <typename T, template <typename> class Allocator>
-CDoubleLinkedList<T, Allocator>::CDoubleLinkedList(const self& _rList)
+template <typename T, template <typename> class TAllocator>
+CDoubleLinkedList<T, TAllocator>::CDoubleLinkedList(const self& _rList)
     : m_Anchor()
 {
     m_Anchor.m_pNext = &m_Anchor;
@@ -679,101 +679,101 @@ CDoubleLinkedList<T, Allocator>::CDoubleLinkedList(const self& _rList)
     Insert(Begin(), _rList.Begin(), _rList.End());
 }
 
-template <typename T, template <typename> class Allocator>
-CDoubleLinkedList<T, Allocator>::~CDoubleLinkedList()
+template <typename T, template <typename> class TAllocator>
+CDoubleLinkedList<T, TAllocator>::~CDoubleLinkedList()
 {
     Clear();
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::iterator
-CDoubleLinkedList<T, Allocator>::Begin()
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::iterator
+CDoubleLinkedList<T, TAllocator>::Begin()
 {
     return m_Anchor.m_pNext;
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::const_iterator
-CDoubleLinkedList<T, Allocator>::Begin() const
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::const_iterator
+CDoubleLinkedList<T, TAllocator>::Begin() const
 {
     return m_Anchor.m_pNext;
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::reverse_iterator
-CDoubleLinkedList<T, Allocator>::RBegin()
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::reverse_iterator
+CDoubleLinkedList<T, TAllocator>::RBegin()
 {
     return m_Anchor.m_pPrev;
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::const_reverse_iterator
-CDoubleLinkedList<T, Allocator>::RBegin() const
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::const_reverse_iterator
+CDoubleLinkedList<T, TAllocator>::RBegin() const
 {
     return m_Anchor.m_pPrev;
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::iterator
-CDoubleLinkedList<T, Allocator>::End()
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::iterator
+CDoubleLinkedList<T, TAllocator>::End()
 {
     return &m_Anchor;
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::const_iterator
-CDoubleLinkedList<T, Allocator>::End() const
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::const_iterator
+CDoubleLinkedList<T, TAllocator>::End() const
 {
     //return &m_Anchor;
     return const_cast<link_type*>(&m_Anchor);
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::reverse_iterator
-CDoubleLinkedList<T, Allocator>::REnd()
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::reverse_iterator
+CDoubleLinkedList<T, TAllocator>::REnd()
 {
     return &m_Anchor;
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::const_reverse_iterator
-CDoubleLinkedList<T, Allocator>::REnd() const
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::const_reverse_iterator
+CDoubleLinkedList<T, TAllocator>::REnd() const
 {
     //return &m_Anchor;
     return const_cast<link_type*>(&m_Anchor);
 }
 
-template <typename T, template <typename> class Allocator>
+template <typename T, template <typename> class TAllocator>
 void
-CDoubleLinkedList<T, Allocator>::PushBack(const_reference _rElement)
+CDoubleLinkedList<T, TAllocator>::PushBack(const_reference _rElement)
 {
     Insert(End(), _rElement);
 }
 
-template <typename T, template <typename> class Allocator>
+template <typename T, template <typename> class TAllocator>
 void
-CDoubleLinkedList<T, Allocator>::PushFront(const_reference _rElement)
+CDoubleLinkedList<T, TAllocator>::PushFront(const_reference _rElement)
 {
     Insert(Begin(), _rElement);
 }
 
-template <typename T, template <typename> class Allocator>
+template <typename T, template <typename> class TAllocator>
 void
-CDoubleLinkedList<T, Allocator>::PopBack()
+CDoubleLinkedList<T, TAllocator>::PopBack()
 {
     Remove(--End());
 }
 
-template <typename T, template <typename> class Allocator>
+template <typename T, template <typename> class TAllocator>
 void
-CDoubleLinkedList<T, Allocator>::PopFront()
+CDoubleLinkedList<T, TAllocator>::PopFront()
 {
     Remove(Begin());
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::iterator
-CDoubleLinkedList<T, Allocator>::Insert(iterator _Pos, const_reference _rElement)
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::iterator
+CDoubleLinkedList<T, TAllocator>::Insert(iterator _Pos, const_reference _rElement)
 {
     node_type* pTemp = m_NodeAllocator.Allocate(1);
     m_NodeAllocator.Construct(pTemp, node_type());
@@ -785,9 +785,9 @@ CDoubleLinkedList<T, Allocator>::Insert(iterator _Pos, const_reference _rElement
     return pTemp;
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::iterator
-CDoubleLinkedList<T, Allocator>::Remove(iterator _Pos)
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::iterator
+CDoubleLinkedList<T, TAllocator>::Remove(iterator _Pos)
 {
     assert(_Pos.m_pLink != &m_Anchor && "invalid iterator");
     link_type* pPrevLink = _Pos.m_pLink->m_pPrev;
@@ -800,9 +800,9 @@ CDoubleLinkedList<T, Allocator>::Remove(iterator _Pos)
     return pNextLink;
 }
 
-template <typename T, template <typename> class Allocator>
+template <typename T, template <typename> class TAllocator>
 void
-CDoubleLinkedList<T, Allocator>::Insert(iterator _Pos, const_iterator _First, const_iterator _Last)
+CDoubleLinkedList<T, TAllocator>::Insert(iterator _Pos, const_iterator _First, const_iterator _Last)
 {
     for (; _First != _Last; ++_First)
     {
@@ -810,23 +810,23 @@ CDoubleLinkedList<T, Allocator>::Insert(iterator _Pos, const_iterator _First, co
     }
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::iterator
-CDoubleLinkedList<T, Allocator>::Insert(index_type _Index, const_reference _rElement)
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::iterator
+CDoubleLinkedList<T, TAllocator>::Insert(index_type _Index, const_reference _rElement)
 {
     return Insert(GetIteratorByIndex(_Index), _rElement);
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::iterator
-CDoubleLinkedList<T, Allocator>::Remove(index_type _Index)
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::iterator
+CDoubleLinkedList<T, TAllocator>::Remove(index_type _Index)
 {
     return Remove(GetIteratorByIndex(_Index));
 }
 
-template <typename T, template <typename> class Allocator>
+template <typename T, template <typename> class TAllocator>
 void
-CDoubleLinkedList<T, Allocator>::Clear()
+CDoubleLinkedList<T, TAllocator>::Clear()
 {
     node_type* pCurrent = static_cast<node_type*>(m_Anchor.m_pNext);
     while (pCurrent != &m_Anchor)
@@ -840,39 +840,39 @@ CDoubleLinkedList<T, Allocator>::Clear()
     m_Anchor.m_pNext = &m_Anchor;
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::reference
-CDoubleLinkedList<T, Allocator>::GetElementAt(index_type _Index)
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::reference
+CDoubleLinkedList<T, TAllocator>::GetElementAt(index_type _Index)
 {
     return *GetIteratorByIndex(_Index);
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::const_reference
-CDoubleLinkedList<T, Allocator>::GetElementAt(index_type _Index) const
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::const_reference
+CDoubleLinkedList<T, TAllocator>::GetElementAt(index_type _Index) const
 {
     return *GetIteratorByIndex(_Index);
 }
 
-template <typename T, template <typename> class Allocator>
+template <typename T, template <typename> class TAllocator>
 bool
-CDoubleLinkedList<T, Allocator>::IsEmpty() const
+CDoubleLinkedList<T, TAllocator>::IsEmpty() const
 {
     return m_Anchor.m_pNext == &m_Anchor;
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::size_type
-CDoubleLinkedList<T, Allocator>::GetElementCount() const
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::size_type
+CDoubleLinkedList<T, TAllocator>::GetElementCount() const
 {
     size_type Size = 0;
     for (const_iterator It = Begin(); It != End(); ++It, ++Size);
     return Size;
 }
 
-template <typename T, template <typename> class Allocator>
-typename CDoubleLinkedList<T, Allocator>::iterator
-CDoubleLinkedList<T, Allocator>::GetIteratorByIndex(index_type _Index)
+template <typename T, template <typename> class TAllocator>
+typename CDoubleLinkedList<T, TAllocator>::iterator
+CDoubleLinkedList<T, TAllocator>::GetIteratorByIndex(index_type _Index)
 {
     iterator It = Begin();
     for (;_Index > 0; --_Index, ++It)

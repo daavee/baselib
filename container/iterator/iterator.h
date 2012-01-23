@@ -26,7 +26,7 @@ struct SRandomAccessIteratorTag : public SBidirectionalIteratorTag
 };
 
 template <
-    class TCategory,
+    class TTag,
     class TValue,
     class TDifference = ptrdiff_t,
     class TPointer = TValue*,
@@ -34,7 +34,7 @@ template <
 >
 struct SIterator
 {
-    typedef TCategory   iterator_tag_type;
+    typedef TTag        iterator_tag_type;
     typedef TValue      value_type;
     typedef TPointer    value_pointer_type;
     typedef TReference  value_reference_type;
@@ -68,6 +68,9 @@ public: // biderectional functions
     value_reference_type operator*() const;
     value_pointer_type   operator->() const;
 
+    const bool operator==(self_type _Rhs) const;
+    const bool operator!=(self_type _Rhs) const;
+
     self_type&      operator++();
     const self_type operator++(int);
     self_type&      operator--();
@@ -86,6 +89,131 @@ private: // member
 
     iterator_type m_Base;
 };
+
+template <class TIterator>
+CReverseIterator<TIterator>::CReverseIterator()
+    : m_Base()
+{
+}
+
+template <class TIterator>
+CReverseIterator<TIterator>::CReverseIterator(iterator_type _It)
+    : m_Base(_It)
+{
+}
+
+template <class TIterator>
+CReverseIterator<TIterator>::CReverseIterator(const self_type& _rRIt)
+    : m_Base(_rRIt.m_Base)
+{
+}
+
+template <class TIterator>
+typename CReverseIterator<TIterator>::iterator_type
+    CReverseIterator<TIterator>::GetBaseIterator() const
+{
+    return m_Base; // returns copy
+}
+
+template <class TIterator>
+typename CReverseIterator<TIterator>::value_reference_type
+    CReverseIterator<TIterator>::operator*() const
+{
+    iterator_type Temp(m_Base);
+    return *Temp;
+}
+
+template <class TIterator>
+typename CReverseIterator<TIterator>::value_pointer_type
+    CReverseIterator<TIterator>::operator->() const
+{
+    return &(operator*());
+}
+
+template <class TIterator>
+const bool
+    CReverseIterator<TIterator>::operator==(self_type _Rhs) const
+{
+    return m_Base == _Rhs.m_Base;
+}
+
+template <class TIterator>
+const bool
+    CReverseIterator<TIterator>::operator!=(self_type _Rhs) const
+{
+    return m_Base != _Rhs.m_Base;
+}
+
+template <class TIterator>
+typename CReverseIterator<TIterator>::self_type&
+    CReverseIterator<TIterator>::operator++()
+{
+    --m_Base;
+    return *this;
+}
+
+template <class TIterator>
+const typename CReverseIterator<TIterator>::self_type
+    CReverseIterator<TIterator>::operator++(int)
+{
+    self_type Temp(*this);
+    --m_Base;
+    return Temp;
+}
+
+template <class TIterator>
+typename CReverseIterator<TIterator>::self_type&
+    CReverseIterator<TIterator>::operator--()
+{
+    ++m_Base;
+    return *this;
+}
+
+template <class TIterator>
+const typename CReverseIterator<TIterator>::self_type
+    CReverseIterator<TIterator>::operator--(int)
+{
+    self_type Temp(*this);
+    ++m_Base;
+    return Temp;
+}
+
+template <class TIterator>
+const typename CReverseIterator<TIterator>::self_type
+    CReverseIterator<TIterator>::operator+(difference_type _Diff) const
+{
+    return self_type(m_Base - _Diff);
+}
+
+template <class TIterator>
+typename CReverseIterator<TIterator>::self_type&
+    CReverseIterator<TIterator>::operator+=(difference_type _Diff)
+{
+    m_Base -= _Diff;
+    return *this;
+}
+
+template <class TIterator>
+const typename CReverseIterator<TIterator>::self_type
+    CReverseIterator<TIterator>::operator-(difference_type _Diff) const
+{
+    return self_type(m_Base + _Diff);
+}
+
+template <class TIterator>
+typename CReverseIterator<TIterator>::self_type&
+    CReverseIterator<TIterator>::operator-=(difference_type _Diff)
+{
+    m_Base += _Diff;
+    return *this;
+}
+
+template <class TIterator>
+typename CReverseIterator<TIterator>::value_reference_type
+    CReverseIterator<TIterator>::operator[](difference_type _Pos) const
+{
+    return *(*this + _Pos);
+}
 
 
     } // namespace CNT

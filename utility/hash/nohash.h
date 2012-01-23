@@ -1,6 +1,8 @@
 #ifndef __INCLUDE_NO_HASH_H_
 #define __INCLUDE_NO_HASH_H_
 
+#include "keyhash.h"
+
 namespace BASE {
     namespace UTIL {
 
@@ -8,15 +10,16 @@ namespace BASE {
 template <typename T>
 struct SNoHash
 {
-    typedef T value_type;
-    typedef T hash_type;
+    typedef T                               value_type;
+    typedef void                            hash_type;
+    typedef SKeyHash<value_type, hash_type> key_hash_type;
 
-    const hash_type& operator()(const value_type& _rValue) const
+    key_hash_type operator()(const value_type& _rValue) const
     {
         return _rValue;
     }
 
-    const hash_type& operator()(const value_type* _pValue) const
+    key_hash_type operator()(const value_type* _pValue) const
     {
         return operator()(*_pValue);
     }
